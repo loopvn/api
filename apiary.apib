@@ -9,7 +9,8 @@ Tài liệu đặc tả chi tiết các API được sử dụng trong hệ th�
 
 ### Liệt kê các câu hỏi [GET]
 Mỗi câu hỏi trả về sẽ bao gồm các thuộc tính sau:
-- name: Nội dung câu hỏi
+- problemHierachy: Phân hệ kiến thức
+- problemName: Mã của đơn vị kiến thức 
 - questionTypeId: Id của kiểu câu hỏi (mặc định = 1 cho tất cả các câu hỏi trong dự án Loop)
 - difficulty: Độ khó của câu hỏi (1-4)
 - options: Danh sách các câu trả lời (option)
@@ -17,41 +18,25 @@ Mỗi câu hỏi trả về sẽ bao gồm các thuộc tính sau:
 - isActive: Trạng thái hoạt động của câu hỏi
 - solution: Đáp án của câu hỏi
 Ngoài ra, bộ câu hỏi cũng được đính kèm các thiết lập (config) để tuy biến:
-- allowBack: cho phép quay trở lại xem câu hỏi cũ
-- allowReview: cho phép xem lại toàn bộ các câu trả lời
-- autoMove: sau khi trả lời ứng dụng sẽ tự động chuyển sang câu mới
-- duration: quy định thời gian hoàn thành. 0 có nghĩa là không giới hạn.
-- pageSize: số lượng trang (mặc định = 1 cho dự án Loop)
-- requiredAll: quy định phải trả lời tất cả các câu hỏi trước khi submit.
 - richText: cho phép nhập nội dung dạng Richtext (để sẵn cho phần học Tiếng Anh)
-- shuffleQuestions: hiển thị ngẫu nhiên các câu hỏi
 - showClock: Hiển thị đồng hồ
-- showPager: Hiển thị trang (có thể sẽ dùng cho đề Tiếng Anh)
 
 + Response 200 (application/json)
 ```
 {
   "id": 1,
-  "name": "Câu hỏi về hình học cơ bản",
+  "problemHierachy": "Hình học"
+  "problemCode": "HHCB",
   "description": "Hình học cơ bản (Hình vuông, hình chữ nhật, hình tam giác...)",
   "config": {
-    "allowBack": true,
-    "allowReview": true,
-    "autoMove": false,
-    "duration": 0,
-    "pageSize": 1,
-    "requiredAll": false,
     "richText": false,
-    "shuffleQuestions": false,
     "showClock": false,
-    "showPager": true,
     "theme": "none"
   },
   "questions": [
     {
       "id": 1010,
       "name": "Hình nào dưới đây có 4 cạnh bằng nhau?",
-      "questionTypeId": 1,
       "difficulty": 1,
       "solution":"Đáp án đúng là hình vuông",
       "options": [
@@ -79,17 +64,11 @@ Ngoài ra, bộ câu hỏi cũng được đính kèm các thiết lập (config
           "name": "Thang",
           "isAnswer": false
         }
-      ],
-      "questionType": {
-        "id": 1,
-        "name": "Multiple Choice",
-        "isActive": true
-      }
+      ]
     },
     {
       "id": 1011,
       "name": "Hình tam giác có mấy cạnh?",
-      "questionTypeId": 1,
       "difficulty": 2,
       "solution":"Đáp án đúng là hình tam giác có 3 cạnh",
       "options": [
@@ -117,17 +96,11 @@ Ngoài ra, bộ câu hỏi cũng được đính kèm các thiết lập (config
           "name": "4",
           "isAnswer": false
         }
-      ],
-      "questionType": {
-        "id": 1,
-        "name": "Multiple Choice",
-        "isActive": true
-      }
+      ]
     },
     {
       "id": 1012,
       "name": "Tìm chu vi của hình vuông có cạnh bằng 8",
-      "questionTypeId": 1,
       "difficulty": 3,
       "solution":"Chu vi hình vuông bằng tổng độ dài 4 cạnh = 8*4=32 ",
       "options": [
@@ -155,12 +128,7 @@ Ngoài ra, bộ câu hỏi cũng được đính kèm các thiết lập (config
           "name": "32",
           "isAnswer": true
         }
-      ],
-      "questionType": {
-        "id": 1,
-        "name": "Multiple Choice",
-        "isActive": true
-      }
+      ]
     }
   ]
 }
@@ -174,7 +142,6 @@ Người nhập liệu sẽ sử dụng API để tạo câu hỏi mới trong n
     {
       "id": 1010,
       "name": "Hình nào dưới đây có 4 cạnh bằng nhau?",
-      "questionTypeId": 1,
       "difficulty": 1,
       "options": [
         {
@@ -201,12 +168,7 @@ Người nhập liệu sẽ sử dụng API để tạo câu hỏi mới trong n
           "name": "Thang",
           "isAnswer": false
         }
-      ],
-      "questionType": {
-        "id": 1,
-        "name": "Multiple Choice",
-        "isActive": true
-      }
+      ]
     }
 ```
 + Response 201 (application/json)
@@ -220,8 +182,8 @@ Người nhập liệu sẽ sử dụng API để tạo câu hỏi mới trong n
     {
       "id": 1010,
       "name": "Hình nào dưới đây có 4 cạnh bằng nhau?",
-      "questionTypeId": 1,
       "difficulty": 1,
+      "solution":"Đáp án đúng là hình vuông",
       "options": [
         {
           "id": 1055,
@@ -247,11 +209,22 @@ Người nhập liệu sẽ sử dụng API để tạo câu hỏi mới trong n
           "name": "Thang",
           "isAnswer": false
         }
-      ],
-      "questionType": {
-        "id": 1,
-        "name": "Multiple Choice",
-        "isActive": true
-      }
+      ]
     }
 ```
+
+## Lưu kết quả [/answer/log]
+Mỗi câu trả lời sẽ được gửi đi và cập nhật vào hệ thống như sau:
+- studentId: Mã học sinh
+- problemHiearchy: Id của phân hệ kiến thức
+- problemId: Id của đơn vị kiến thức
+- problemView: Tổng số lần gặp lại câu hỏi 
+- stepId: Id của câu hỏi
+- stepStartTime: Thời gian bắt đầu hiển thị câu hỏi 
+- firstTransactionTime: Thời điểm đầu tiên chọn một đáp án
+- correctTransactionTime: Thời điểm chọn đáp án đúng
+- stepEndTime: Thời gian kết thúc (gửi câu hỏi)
+- stepDuration (s): Thời gian hoàn thành câu hỏi (tính bằng giây)
+- correctFirstAttempt: Trả lời đúng ngay lần đầu tiên (0/1 hoặc true/false)
+- corrects: Tổng số lần đúng 
+- incorrects: Tổng số lần sai
